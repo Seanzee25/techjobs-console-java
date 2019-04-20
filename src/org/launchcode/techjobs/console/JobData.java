@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,7 +52,30 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        return new ArrayList<>(allJobs);
+    }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+        value = value.toLowerCase();
+
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        Boolean matched;
+
+        for(HashMap<String, String> row : allJobs) {
+            matched = false;
+            for(String aValue : row.values()) {
+                aValue = aValue.toLowerCase();
+                if(aValue.contains(value)) {
+                    matched = true;
+                    break;
+                }
+            }
+            if(matched) { jobs.add(row); }
+        }
+        return jobs;
     }
 
     /**
@@ -66,6 +90,7 @@ public class JobData {
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
+        value = value.toLowerCase();
 
         // load data, if not already loaded
         loadData();
@@ -74,8 +99,7 @@ public class JobData {
 
         for (HashMap<String, String> row : allJobs) {
 
-            String aValue = row.get(column);
-
+            String aValue = row.get(column).toLowerCase();
             if (aValue.contains(value)) {
                 jobs.add(row);
             }
